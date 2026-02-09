@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AhaMove Driver Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f1f5f9;
+            color: #333;
+            padding-bottom: 80px;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .map-placeholder {
+            background: linear-gradient(to bottom, #a5b4fc, #818cf8);
+            height: 250px;
+            margin: 20px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .map-placeholder::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.pixabay.com/photo/2020/07/02/04/26/map-5362132_1280.png') center/cover;
+            opacity: 0.3;
+        }
+        .order-list {
+            margin: 20px;
+        }
+        .order-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 5px solid #10b981;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .order-id {
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .order-price {
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .order-info {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: #555;
+        }
+        .order-info i {
+            margin-right: 10px;
+            color: #7c3aed;
+        }
+        .btn-accept {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-accept:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+        }
+        .nav-item {
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .nav-item.active {
+            color: #4f46e5;
+        }
+        .nav-item i {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .nav-label {
+            font-size: 12px;
+        }
+        .status-bar {
+            background: #fbbf24;
+            color: #92400e;
+            padding: 10px 20px;
+            margin: 0 20px 20px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-shipping-fast"></i> AhaMove Driver</h1>
+        <p>Xin chào, Nguyễn Văn Tài!</p>
+    </div>
+
+    <div class="status-bar">
+        <i class="fas fa-bolt"></i> Bạn đang trực tuyến - Sẵn sàng nhận đơn
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-value">12</div>
+            <div class="stat-label">Đơn hôm nay</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">₫1.250K</div>
+            <div class="stat-label">Thu nhập</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">4.8 ★</div>
+            <div class="stat-label">Đánh giá</div>
+        </div>
+    </div>
+
+    <div class="map-placeholder">
+        <div style="z-index: 1; text-align: center;">
+            <i class="fas fa-map-marked-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
+            <p>Bản đồ đang hiển thị khu vực của bạn</p>
+            <small>Có 5 đơn hàng gần đây</small>
+        </div>
+    </div>
+
+    <div class="order-list">
+        <h3 style="margin-bottom: 15px; color: #4f46e5;"><i class="fas fa-clipboard-list"></i> Đơn hàng gần bạn</h3>
+        
+        <div class="order-item">
+            <div class="order-header">
+                <span class="order-id">#AHM23456</span>
+                <span class="order-price">₫45.000</span>
+            </div>
+            <div class="order-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Quận 1 → Quận 3 (2.5 km)</span>
+            </div>
+            <div class="order-info">
+                <i class="fas fa-box"></i>
+                <span>Tài liệu - 0.5kg</span>
+            </div>
+            <div class="order-info">
+                <i class="far fa-clock"></i>
+                <span>15 phút • Nhận trong 10 phút</span>
+            </div>
+            <button class="btn-accept" onclick="acceptOrder('AHM23456')">
+                <i class="fas fa-check-circle"></i> NHẬN ĐƠN NÀY
+            </button>
+        </div>
+
+        <div class="order-item">
+            <div class="order-header">
+                <span class="order-id">#AHM23457</span>
+                <span class="order-price">₫68.000</span>
+            </div>
+            <div class="order-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Quận 10 → Quận 5 (4 km)</span>
+            </div>
+            <div class="order-info">
+                <i class="fas fa-box"></i>
+                <span>Hàng điện tử - 2kg</span>
+            </div>
+            <div class="order-info">
+                <i class="far fa-clock"></i>
+                <span>25 phút • Ưu tiên</span>
+            </div>
+            <button class="btn-accept" onclick="acceptOrder('AHM23457')">
+                <i class="fas fa-check-circle"></i> NHẬN ĐƠN NÀY
+            </button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="fas fa-home"></i>
+            <div class="nav-label">Trang chủ</div>
+        </div>
+        <div class="nav-item" onclick="showPage('orders')">
+            <i class="fas fa-clipboard-list"></i>
+            <div class="nav-label">Đơn hàng</div>
+        </div>
+        <div class="nav-item" onclick="showPage('earnings')">
+            <i class="fas fa-chart-line"></i>
+            <div class="nav-label">Thu nhập</div>
+        </div>
+        <div class="nav-item" onclick="showPage('account')">
+            <i class="fas fa-user-circle"></i>
+            <div class="nav-label">Tài khoản</div>
+        </div>
+    </div>
+
+    <script>
+        function acceptOrder(orderId) {
+            alert(`Bạn đã nhận đơn hàng ${orderId}! Hãy đến điểm lấy hàng.`);
+            // Thêm logic xử lý nhận đơn ở đây
+        }
+
+        function showPage(page) {
+            alert(`Chuyển đến trang: ${page.toUpperCase()} (Tính năng đang phát triển)`);
+            // Có thể thay đổi nội dung trang tại đây
+        }
+
+        // Simulate real-time order updates
+        setInterval(() => {
+            const prices = ['₫45.000', '₫52.000', '₫68.000', '₫35.000'];
+            const randomPrice = prices[Math.floor(Math.random() * prices.length)];
+            console.log(`Đơn hàng mới có giá ${randomPrice} vừa xuất hiện`);
+        }, 15000);
+    </script>
+</body>
+</html>
